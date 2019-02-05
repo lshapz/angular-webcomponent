@@ -1,16 +1,26 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injector } from '@angular/core';
+import { createCustomElement } from '@angular/elements';
 
-import { AppComponent } from './app.component';
+import { BarChartComponent } from './bar-chart/bar-chart.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    BarChartComponent
   ],
   imports: [
     BrowserModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  entryComponents: [
+    BarChartComponent
+ ]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private injector: Injector) {}
+  ngDoBootstrap() {
+    const el = createCustomElement(BarChartComponent, {injector : this.injector});
+    customElements.define('bar-chart', el);
+  }
+
+}
