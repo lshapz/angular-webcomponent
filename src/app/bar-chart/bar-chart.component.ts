@@ -1,68 +1,80 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewEncapsulation, Input, OnChanges, SimpleChanges } from '@angular/core';
 import * as d3 from 'd3';
-import $ from 'jquery';
 
 @Component({
   selector: 'custom-bar-chart',
   template: `
-  <div style="height: 500px; width: 500px;">
-    <div id="foobar" style="width:100%;height:100%">
+    <div style='height: 500px; width: 500px;'>
+    <div id='ng-bar-chart-id' style='width:100%;height:100%'>
 
     </div>
 
-  </div>
-  <button (click)="drawChart()"> Draw Chart </button>
+    </div>
+  <button (click)='drawChart()'> Draw Chart </button>
   `,
   styles: [],
   encapsulation: ViewEncapsulation.Native
 })
 export class BarChartComponent implements OnInit, OnChanges {
   // @Input() data: [{name: string, value: number}];
-  data = [
+  dataModel: [
     {
-      'name': 'Germany',
-      'value': 40632
+      x: 'Germany',
+      y: 40632
     },
     {
-      'name': 'United States',
-      'value': 49737
+      x: 'United States',
+      y: 49737
     },
     {
-      'name': 'France',
-      'value': 36745
+      x: 'France',
+      y: 36745
     },
     {
-      'name': 'United Kingdom',
-      'value': 36240
+      x: 'United Kingdom',
+      y: 36240
     },
     {
-      'name': 'Spain',
-      'value': 33000
+      x: 'Spain',
+      y: 33000
     },
     {
-      'name': 'Italy',
-      'value': 35800
+      x: 'Italy',
+      y: 35800
     }
   ];
-  propID = 'foobar';
+  propID = 'ng-bar-chart-id';
   yAxisLabel = 'y';
   xAxisLabel = 'x';
   xAxisAngle = 45;
   yAxisAngle = 45;
-  // dataModel: [{x: string, y: number}];
-  constructor() { }
 
-  get dataModel() {
-    return this.data.map(item => {
-      return {x: item.name, y: item.value};
-    });
+  constructor(private viewContainerRef: ViewContainerRef) {
+  }
+  // get dataModel() {
+  //   return this.theData.map(item => {
+  //     return {x: item.name, y: item.value};
+  //   });
+  // }
+
+  get elem() {
+   return this.viewContainerRef.element.nativeElement;
   }
 
+  // get propID() {
+  //   return this.viewContainerRef.element.nativeElement.children[1].children[0].id;
+  // }
+
   ngOnInit() {
-    this.drawBarPlot(this.dataModel, this.propID, this.yAxisLabel, this.xAxisLabel, this.mouseover_callback);
+    this.drawChart();
+    console.log(this.viewContainerRef);
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this.drawChart();
+  }
+
+  drawChart() {
     this.drawBarPlot(this.dataModel, this.propID, this.yAxisLabel, this.xAxisLabel, this.mouseover_callback);
   }
 
@@ -70,24 +82,21 @@ export class BarChartComponent implements OnInit, OnChanges {
       return x;
   }
 
-  drawChart() {
-    this.drawBarPlot(this.dataModel, this.propID, this.yAxisLabel, this.xAxisLabel, this.mouseover_callback);
-  }
   drawBarPlot (data, id, yaxisvalue, xaxisvalue, mouseover_callback) {
         const localThis = this;
         d3.selectAll(`.${this.propID}_tooltip`).remove();
-        const selection_string = '#' + id;
-        if ($(selection_string + ' svg') != null) {
-          $(selection_string + ' svg').remove();
+        const alt = d3.select(localThis.elem).select('svg');
+        if (!!alt._groups[0][0]) {
+          alt.remove();
         }
 
-        const element = $(selection_string);
+        const element2 = d3.select(localThis.elem).select('#ng-bar-chart-id')._groups[0][0];
         const margin = { top: 20, right: 30, bottom: 15, left: 40 };
-        // if (this.xAxisAngle > 0) {
-        //   margin.bottom += (this.xAxisAngle / 2);
-        // }
-        const width = element.width() - margin.left - margin.right,
-          height = element.height() - margin.top - margin.bottom;
+        if (this.xAxisAngle > 0) {
+          margin.bottom += (this.xAxisAngle / 2);
+        }
+        const width = element2.clientWidth - margin.left - margin.right,
+          height = element2.clientHeight - margin.top - margin.bottom;
 
         const x = d3.scaleBand()
           .range([0, width])
@@ -113,7 +122,7 @@ export class BarChartComponent implements OnInit, OnChanges {
           .style('opacity', 0);
 
         const chart = d3
-          .select(selection_string)
+          .select(element2)
           .append('svg')
           .attr('width', width + margin.left + margin.right)
           .attr('height', height + margin.top + margin.bottom)
@@ -148,24 +157,24 @@ export class BarChartComponent implements OnInit, OnChanges {
 
         const text = chart.selectAll('text');
 
-        // if (this.xAxisAngle > 0) {
-        //     text
-        //         .attr('transform', `rotate(${this.xAxisAngle}) translate(0, ${margin.top})`)
-        //         .style('text-anchor', 'middle');
+        if (this.xAxisAngle > 0) {
+            text
+                .attr('transform', `rotate(${this.xAxisAngle}) translate(0, ${margin.top})`)
+                .style('text-anchor', 'middle');
 
-        //     const dimensions = text.node().getBBox();
+            const dimensions = text.node().getBBox();
 
-        //     if (this.xAxisAngle === 45) {
-        //       text.attr('x', 15)
-        //           .attr('y', dimensions.height * 2);
-        //     }
+            if (this.xAxisAngle === 45) {
+              text.attr('x', 15)
+                  .attr('y', dimensions.height * 2);
+            }
 
-        //     if (this.xAxisAngle === 90) {
-        //       text.attr('x', dimensions.width - 10)
-        //           .attr('y', 0);
-        //     }
+            if (this.xAxisAngle === 90) {
+              text.attr('x', dimensions.width - 10)
+                  .attr('y', 0);
+            }
 
-        // }
+        }
 
         chart
           .append('g')
@@ -199,6 +208,7 @@ export class BarChartComponent implements OnInit, OnChanges {
             .style('fill', '#2DA8C9')
             .on('mouseover', function(d) {
               const yval = mouseover_callback(d.y);
+              debugger
               tooltip
                 .transition()
                 .duration(100)
@@ -233,4 +243,5 @@ export class BarChartComponent implements OnInit, OnChanges {
             });
         }
   }
+
 }
