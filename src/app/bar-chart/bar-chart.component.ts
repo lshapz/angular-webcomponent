@@ -5,12 +5,10 @@ import * as d3 from 'd3';
   selector: 'custom-bar-chart',
   template: `
     <div style='height: 500px; width: 500px;'>
-    <div id='ng-bar-chart-id' style='width:100%;height:100%'>
-
+      <div id='ng-bar-chart-id' style='width:100%;height:100%'>
+      </div>
     </div>
-
-    </div>
-  <button (click)='drawChart()'> Draw Chart </button>
+        <!-- <button (click)='drawChart()'> Draw Chart </button> -->
   `,
   styles: [],
   encapsulation: ViewEncapsulation.Native
