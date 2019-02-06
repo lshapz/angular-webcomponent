@@ -8,20 +8,18 @@ import * as d3 from 'd3';
       <div id='ng-bar-chart-id' style='width:100%;height:100%'>
       </div>
     </div>
-        <!-- <button (click)='drawChart()'> Draw Chart </button> -->
+    <button (click)='drawChart()'> Draw Chart </button>
   `,
   styles: [],
   encapsulation: ViewEncapsulation.Native
 })
 export class BarChartComponent implements OnInit, OnChanges {
-  // @Input() data: [{name: string, value: number}];
+  @Input() strdatamodel: string;
+  @Input() yaxislabel: string;
   propID = 'ng-bar-chart-id';
-  yAxisLabel = 'y';
   xAxisLabel = 'x';
   xAxisAngle = 45;
   yAxisAngle = 45;
-  dataModel: Array<any>;
-
   constructor(private viewContainerRef: ViewContainerRef) {
   }
 
@@ -29,19 +27,16 @@ export class BarChartComponent implements OnInit, OnChanges {
    return d3.select('bar-chart')._groups[0][0].shadowRoot;
   }
 
+  get dataModel() {
+    return JSON.parse(this.strdatamodel);
+  }
+
   // get propID() {
   //   return this.viewContainerRef.element.nativeElement.children[1].children[0].id;
   // }
 
   ngOnInit() {
-    this.dataModel = [
-      { x: 'Germany', y: 40632 },
-      { x: 'United States', y: 49737 },
-      { x: 'France', y: 36745 },
-      { x: 'United Kingdom', y: 36240 },
-      { x: 'Spain', y: 33000 },
-      { x: 'Italy', y: 35800 }
-    ];
+    // this.dataModel = ;
     this.drawChart();
     console.log(this.viewContainerRef);
   }
@@ -61,7 +56,7 @@ export class BarChartComponent implements OnInit, OnChanges {
   drawBarPlot () {
         const data = this.dataModel;
         const id = this.propID;
-        const yaxisvalue = this.yAxisLabel;
+        const yaxisvalue = this.yaxislabel;
         const xaxisvalue = this.xAxisLabel;
         const mouseover_callback = this.mouseover_callback;
         const localThis = this;
