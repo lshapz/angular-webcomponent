@@ -1,14 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injector } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
-
 import { BarChartComponent } from './bar-chart/bar-chart.component';
-// import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [
     BarChartComponent,
-    // AppComponent
   ],
   imports: [
     BrowserModule
@@ -16,10 +13,7 @@ import { BarChartComponent } from './bar-chart/bar-chart.component';
   providers: [],
   entryComponents: [
     BarChartComponent
- ],
-  // bootstrap: [
-  //   AppComponent
-  // ]
+  ],
 })
 export class AppModule {
   constructor(private injector: Injector) {}

@@ -4,22 +4,24 @@ import * as d3 from 'd3';
 @Component({
   selector: 'custom-bar-chart',
   template: `
+    <h2 style="text-align: center"> Angular (D3) - Built </h2>
     <div style='height: 500px; width: 500px;'>
       <div id='ng-bar-chart-id' style='width:100%;height:100%'>
       </div>
     </div>
-    <button (click)='drawChart()'> Draw Chart </button>
+        <!-- <button (click)='drawChart()'> Draw Chart </button> -->
   `,
   styles: [],
   encapsulation: ViewEncapsulation.Native
 })
 export class BarChartComponent implements OnInit, OnChanges {
   @Input() strdatamodel: string;
-  @Input() yaxislabel: string;
   propID = 'ng-bar-chart-id';
   xAxisLabel = 'x';
   xAxisAngle = 45;
   yAxisAngle = 45;
+  yAxisLabel = 'y';
+
   constructor(private viewContainerRef: ViewContainerRef) {
   }
 
@@ -36,7 +38,6 @@ export class BarChartComponent implements OnInit, OnChanges {
   // }
 
   ngOnInit() {
-    // this.dataModel = ;
     this.drawChart();
     console.log(this.viewContainerRef);
   }
@@ -56,7 +57,7 @@ export class BarChartComponent implements OnInit, OnChanges {
   drawBarPlot () {
         const data = this.dataModel;
         const id = this.propID;
-        const yaxisvalue = this.yaxislabel;
+        const yaxisvalue = this.yAxisLabel;
         const xaxisvalue = this.xAxisLabel;
         const mouseover_callback = this.mouseover_callback;
         const localThis = this;
