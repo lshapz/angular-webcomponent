@@ -17,48 +17,18 @@ import * as d3 from 'd3';
 })
 export class BarChartComponent implements OnInit, OnChanges {
   // @Input() data: [{name: string, value: number}];
-  dataModel: [
-    {
-      x: 'Germany',
-      y: 40632
-    },
-    {
-      x: 'United States',
-      y: 49737
-    },
-    {
-      x: 'France',
-      y: 36745
-    },
-    {
-      x: 'United Kingdom',
-      y: 36240
-    },
-    {
-      x: 'Spain',
-      y: 33000
-    },
-    {
-      x: 'Italy',
-      y: 35800
-    }
-  ];
   propID = 'ng-bar-chart-id';
   yAxisLabel = 'y';
   xAxisLabel = 'x';
   xAxisAngle = 45;
   yAxisAngle = 45;
+  dataModel: Array<any>;
 
   constructor(private viewContainerRef: ViewContainerRef) {
   }
-  // get dataModel() {
-  //   return this.theData.map(item => {
-  //     return {x: item.name, y: item.value};
-  //   });
-  // }
 
   get elem() {
-   return this.viewContainerRef.element.nativeElement;
+   return d3.select('bar-chart')._groups[0][0].shadowRoot;
   }
 
   // get propID() {
@@ -66,6 +36,14 @@ export class BarChartComponent implements OnInit, OnChanges {
   // }
 
   ngOnInit() {
+    this.dataModel = [
+      { x: 'Germany', y: 40632 },
+      { x: 'United States', y: 49737 },
+      { x: 'France', y: 36745 },
+      { x: 'United Kingdom', y: 36240 },
+      { x: 'Spain', y: 33000 },
+      { x: 'Italy', y: 35800 }
+    ];
     this.drawChart();
     console.log(this.viewContainerRef);
   }
@@ -75,14 +53,19 @@ export class BarChartComponent implements OnInit, OnChanges {
   }
 
   drawChart() {
-    this.drawBarPlot(this.dataModel, this.propID, this.yAxisLabel, this.xAxisLabel, this.mouseover_callback);
+    this.drawBarPlot();
   }
 
   mouseover_callback(x) {
       return x;
   }
 
-  drawBarPlot (data, id, yaxisvalue, xaxisvalue, mouseover_callback) {
+  drawBarPlot () {
+        const data = this.dataModel;
+        const id = this.propID;
+        const yaxisvalue = this.yAxisLabel;
+        const xaxisvalue = this.xAxisLabel;
+        const mouseover_callback = this.mouseover_callback;
         const localThis = this;
         d3.selectAll(`.${this.propID}_tooltip`).remove();
         const alt = d3.select(localThis.elem).select('svg');
@@ -208,7 +191,6 @@ export class BarChartComponent implements OnInit, OnChanges {
             .style('fill', '#2DA8C9')
             .on('mouseover', function(d) {
               const yval = mouseover_callback(d.y);
-              debugger
               tooltip
                 .transition()
                 .duration(100)
